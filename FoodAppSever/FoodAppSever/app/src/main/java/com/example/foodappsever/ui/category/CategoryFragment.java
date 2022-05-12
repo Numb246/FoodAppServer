@@ -206,7 +206,7 @@ public class CategoryFragment extends Fragment {
             if(data!=null && data.getData()!=null)
             {
                 imageUri=data.getData();
-                img_category.setImageURI(imageUri );
+                img_category.setImageURI(imageUri);
             }
         }
     }
