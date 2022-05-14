@@ -35,6 +35,7 @@ import com.example.foodappsever.common.Common;
 import com.example.foodappsever.common.MySwipeHelper;
 import com.example.foodappsever.common.SpacesItemDecoraion;
 import com.example.foodappsever.model.CategoryModel;
+import com.example.foodappsever.model.EventBus.ToastEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,6 +45,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
@@ -99,7 +102,7 @@ public class CategoryFragment extends Fragment {
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
         dialog=new SpotsDialog.Builder().setContext(getContext()).setCancelable(false).build();
-        dialog.show();
+        //dialog.show();
         layoutAnimationController= AnimationUtils.loadLayoutAnimation(getContext(),R.anim.layout_item_from_left);
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
 
@@ -193,7 +196,7 @@ public class CategoryFragment extends Fragment {
                 .addOnFailureListener(e -> Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> {
                     categoryViewModel.loadCategories();
-                    Toast.makeText(getContext(), "Update success", Toast.LENGTH_SHORT).show();
+                    EventBus.getDefault().postSticky(new ToastEvent(true,true));
                 });
 
     }

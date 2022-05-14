@@ -12,6 +12,7 @@ public class FoodModel {
     private Long ratingCount;
     private List<AddonModel> userSelectedAddon;
     private SizeModel userSelectedSize;
+    private int positionInList=-1;
     public FoodModel() {
     }
 
@@ -109,5 +110,13 @@ public class FoodModel {
 
     public void setUserSelectedSize(SizeModel userSelectedSize) {
         this.userSelectedSize = userSelectedSize;
+    }
+
+    public int getPositionInList() {
+        return positionInList;
+    }
+
+    public void setPositionInList(int positionInList) {
+        this.positionInList = positionInList;
     }
 }
