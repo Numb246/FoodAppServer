@@ -13,6 +13,9 @@ import com.example.foodappsever.common.Common;
 import com.example.foodappsever.model.EventBus.CategoryClick;
 import com.example.foodappsever.model.EventBus.ChangeMenuClick;
 import com.example.foodappsever.model.EventBus.ToastEvent;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -27,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodappsever.databinding.ActivityHomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,12 +55,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(binding.appBarHome.toolbar);
 
+        subscribeToTopic(Common.createTopicOrder());
+
         drawer = binding.drawerLayout;
         navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_category, R.id.nav_food_list, R.id.nav_order)
+                R.id.nav_category, R.id.nav_food_list, R.id.nav_order,R.id.nav_shipper)
                 .setOpenableLayout(drawer)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
@@ -68,6 +74,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         TextView txt_user=(TextView) headerView.findViewById(R.id.txt_user);
         Common.setSpanString("Hey",Common.currentServerUser.getName(),txt_user);
         menuClick=R.id.nav_category;
+    }
+
+    private void subscribeToTopic(String topicOrder) {
+        FirebaseMessaging.getInstance()
+                .subscribeToTopic(topicOrder)
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                })
+                .addOnCompleteListener(task -> {
+                    if(!task.isSuccessful())
+                        Toast.makeText(this,"Failed: "+task.isSuccessful(),Toast.LENGTH_SHORT).show();
+                });
     }
 
     @Override
@@ -159,6 +177,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if(item.getItemId()!=menuClick) {
                     navController.popBackStack();
                     navController.navigate(R.id.nav_order);
+                }
+                break;
+            case R.id.nav_shipper:
+                if(item.getItemId()!=menuClick) {
+                    navController.popBackStack();
+                    navController.navigate(R.id.nav_shipper);
                 }
                 break;
             case R.id.nav_sign_out:
