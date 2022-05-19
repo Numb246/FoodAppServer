@@ -15,6 +15,7 @@ import com.example.foodappsever.model.EventBus.ChangeMenuClick;
 import com.example.foodappsever.model.EventBus.ToastEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -30,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodappsever.databinding.ActivityHomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.greenrobot.eventbus.EventBus;
@@ -57,6 +59,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         subscribeToTopic(Common.createTopicOrder());
 
+        updateToken();
+
         drawer = binding.drawerLayout;
         navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
@@ -74,6 +78,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         TextView txt_user=(TextView) headerView.findViewById(R.id.txt_user);
         Common.setSpanString("Hey",Common.currentServerUser.getName(),txt_user);
         menuClick=R.id.nav_category;
+    }
+
+    private void updateToken() {
+        FirebaseInstallations.getInstance().getId()
+                .addOnFailureListener(e -> Toast.makeText(HomeActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        Common.updateToken(HomeActivity.this,FirebaseMessaging.getInstance().getToken().getResult(),true,false);
+                    }
+                });
     }
 
     private void subscribeToTopic(String topicOrder) {

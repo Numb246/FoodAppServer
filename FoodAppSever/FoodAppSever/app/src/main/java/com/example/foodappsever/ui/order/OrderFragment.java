@@ -357,7 +357,55 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
                     if(task.isSuccessful())
                     {
                         dialog.dismiss();
-                        updateOrder(pos, orderModel, 1);
+                        //updateOrder(pos, orderModel, 1);
+                        FirebaseDatabase.getInstance()
+                                .getReference(Common.TOKEN_REF)
+                                .child(shipperModel.getKey())
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if(snapshot.exists())
+                                        {
+                                            TokenModel tokenModel=snapshot.getValue(TokenModel.class);
+                                            Map<String,String> notiData=new HashMap<>();
+                                            notiData.put(Common.NOTI_TITLE,"You have new order need ship");
+                                            notiData.put(Common.NOTI_CONTENT,new StringBuilder("You have new order need ship to ")
+                                                    .append(orderModel.getUserPhone()).toString());
+
+                                            FCMSenData senData=new FCMSenData(tokenModel.getToken(),notiData);
+
+                                            compositeDisposable.add(ifcmService.sendNotification(senData)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(fcmResponse -> {
+                                                        dialog.dismiss();
+                                                        if(fcmResponse.getSuccess()==1)
+                                                        {
+                                                            updateOrder(pos,orderModel,1);
+                                                        }
+                                                        else
+                                                        {
+                                                            Toast.makeText(getContext(), "Failed to send to shipper ! Order wasn't update", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }, throwable -> {
+                                                        dialog.dismiss();
+                                                        Toast.makeText(getContext(),""+throwable.getMessage(),Toast.LENGTH_SHORT).show();
+                                                    }));
+                                        }
+                                        else
+                                        {
+                                            dialog.dismiss();
+                                            Toast.makeText(getContext(),"Token not found",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        dialog.dismiss();
+                                        Toast.makeText(getContext(),""+error,Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
                     }
                 });
 
