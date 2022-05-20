@@ -112,7 +112,7 @@ public class Common {
         notificationManager.notify(id,notification);
     }
 
-    public static void updateToken(Context context,String newToken, boolean isServer, boolean isShipper) {
+    public static void updateToken(Context context,String newToken,boolean isServer,boolean isShipper) {
         FirebaseDatabase.getInstance()
                 .getReference(Common.TOKEN_REF)
                 .child(Common.currentServerUser.getUid())

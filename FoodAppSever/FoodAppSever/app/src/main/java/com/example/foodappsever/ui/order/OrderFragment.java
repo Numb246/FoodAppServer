@@ -357,7 +357,6 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
                     if(task.isSuccessful())
                     {
                         dialog.dismiss();
-                        //updateOrder(pos, orderModel, 1);
                         FirebaseDatabase.getInstance()
                                 .getReference(Common.TOKEN_REF)
                                 .child(shipperModel.getKey())
@@ -368,12 +367,9 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
                                         {
                                             TokenModel tokenModel=snapshot.getValue(TokenModel.class);
                                             Map<String,String> notiData=new HashMap<>();
-                                            notiData.put(Common.NOTI_TITLE,"You have new order need ship");
-                                            notiData.put(Common.NOTI_CONTENT,new StringBuilder("You have new order need ship to ")
-                                                    .append(orderModel.getUserPhone()).toString());
-
+                                            notiData.put(Common.NOTI_TITLE,"You have new order need ship ");
+                                            notiData.put(Common.NOTI_CONTENT,new StringBuilder("You have new order need ship to ").append(orderModel.getUserPhone()).toString());
                                             FCMSenData senData=new FCMSenData(tokenModel.getToken(),notiData);
-
                                             compositeDisposable.add(ifcmService.sendNotification(senData)
                                                     .subscribeOn(Schedulers.io())
                                                     .observeOn(AndroidSchedulers.mainThread())
@@ -385,7 +381,7 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
                                                         }
                                                         else
                                                         {
-                                                            Toast.makeText(getContext(), "Failed to send to shipper ! Order wasn't update", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(getContext(), "Failed to send to shipper ! Order wasn't update!", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }, throwable -> {
                                                         dialog.dismiss();

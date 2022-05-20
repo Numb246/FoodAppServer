@@ -15,7 +15,6 @@ import com.example.foodappsever.model.EventBus.ChangeMenuClick;
 import com.example.foodappsever.model.EventBus.ToastEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -31,7 +30,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodappsever.databinding.ActivityHomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.greenrobot.eventbus.EventBus;
@@ -58,7 +56,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(binding.appBarHome.toolbar);
 
         subscribeToTopic(Common.createTopicOrder());
-
         updateToken();
 
         drawer = binding.drawerLayout;
@@ -81,13 +78,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void updateToken() {
-        FirebaseInstallations.getInstance().getId()
-                .addOnFailureListener(e -> Toast.makeText(HomeActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show())
-                .addOnSuccessListener(new OnSuccessListener<String>() {
-                    @Override
-                    public void onSuccess(String s) {
-                        Common.updateToken(HomeActivity.this,FirebaseMessaging.getInstance().getToken().getResult(),true,false);
-                    }
+        FirebaseMessaging.getInstance().getToken()
+                .addOnFailureListener(e -> {
+                    Toast.makeText(HomeActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                })
+                .addOnSuccessListener(s -> {
+                    Common.updateToken(HomeActivity.this,s,true,false);
                 });
     }
 
