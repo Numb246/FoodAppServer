@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(binding.appBarHome.toolbar);
 
         subscribeToTopic(Common.createTopicOrder());
+        updateToken();
 
         drawer = binding.drawerLayout;
         navigationView = binding.navView;
@@ -74,6 +75,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         TextView txt_user=(TextView) headerView.findViewById(R.id.txt_user);
         Common.setSpanString("Hey",Common.currentServerUser.getName(),txt_user);
         menuClick=R.id.nav_category;
+    }
+
+    private void updateToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnFailureListener(e -> {
+                    Toast.makeText(HomeActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                })
+                .addOnSuccessListener(s -> {
+                    Common.updateToken(HomeActivity.this,s,true,false);
+                });
     }
 
     private void subscribeToTopic(String topicOrder) {
