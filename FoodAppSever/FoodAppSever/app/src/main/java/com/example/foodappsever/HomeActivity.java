@@ -3,6 +3,7 @@ package com.example.foodappsever;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -75,6 +76,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         TextView txt_user=(TextView) headerView.findViewById(R.id.txt_user);
         Common.setSpanString("Hey",Common.currentServerUser.getName(),txt_user);
         menuClick=R.id.nav_category;
+        checkIsOpenFromActivity();
+    }
+
+    private void checkIsOpenFromActivity() {
+        boolean isOpenFromNewOrder=getIntent().getBooleanExtra(Common.IS_OPEN_ACTIVITY_NEW_ORDER,false);
+        if(isOpenFromNewOrder)
+        {
+            navController.popBackStack();
+            navController.navigate(R.id.nav_order);
+            menuClick=R.id.nav_order;
+        }
     }
 
     private void updateToken() {
@@ -84,6 +96,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 })
                 .addOnSuccessListener(s -> {
                     Common.updateToken(HomeActivity.this,s,true,false);
+                    Log.d("MYTOKEN",s);
                 });
     }
 
