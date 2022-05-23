@@ -1,7 +1,10 @@
 package com.example.foodappsever.services;
 
+import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
+import com.example.foodappsever.MainActivity;
 import com.example.foodappsever.common.Common;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -15,10 +18,21 @@ public class MyFCMServices extends FirebaseMessagingService {
         Map<String,String> dataRecv=message.getData();
         if(dataRecv!=null)
         {
-            Common.showNotification(this,new Random().nextInt(),
-                    dataRecv.get(Common.NOTI_TITLE),
-                    dataRecv.get(Common.NOTI_CONTENT),
-                    null);
+            if(dataRecv.get(Common.NOTI_TITLE).equals("New Order"))
+            {
+                Intent intent=new Intent(this, MainActivity.class);
+                intent.putExtra(Common.IS_OPEN_ACTIVITY_NEW_ORDER,true);
+                Common.showNotification(this, new Random().nextInt(),
+                        dataRecv.get(Common.NOTI_TITLE),
+                        dataRecv.get(Common.NOTI_CONTENT),
+                        intent);
+            }
+            else {
+                Common.showNotification(this, new Random().nextInt(),
+                        dataRecv.get(Common.NOTI_TITLE),
+                        dataRecv.get(Common.NOTI_CONTENT),
+                        null);
+            }
         }
     }
 

@@ -36,6 +36,7 @@ public class Common {
     public static final String TOKEN_REF = "Tokens";
     public static final String SHIPPER = "Shippers";
     public static final String SHIPPING_ORDER_REF = "ShippingOrder";
+    public static final String IS_OPEN_ACTIVITY_NEW_ORDER = "IsOpenActivityNewOrder";
     public static ServerUserModel currentServerUser;
     public static CategoryModel categorySelected;
     public static final int DEFAULT_COLUMN_COUNT = 0;
