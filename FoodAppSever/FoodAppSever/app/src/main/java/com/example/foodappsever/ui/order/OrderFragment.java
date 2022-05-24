@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodappsever.R;
+import com.example.foodappsever.TrackingOrderActivity;
 import com.example.foodappsever.adapter.MyOrderAdapter;
 import com.example.foodappsever.adapter.MyShipperSelectionAdapter;
 import com.example.foodappsever.callback.IShipperLoadCallbackListener;
@@ -141,8 +142,19 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
             public void instantialMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buf) {
                 buf.add(new MyButton(getContext(),"Directions",30,0, Color.parseColor("#9b0000"),
                         pos -> {
-
-
+                    OrderModel orderModel=((MyOrderAdapter)recycler_order.getAdapter())
+                            .getItemAtPosition(pos);
+                    if(orderModel.getOrderStatus()==1)
+                    {
+                        Common.currentOrderSelected=orderModel;
+                        startActivity(new Intent(getContext(), TrackingOrderActivity.class));
+                    }
+                    else
+                    {
+                        Toast.makeText(getContext(),new StringBuilder("Your order is ")
+                                .append(Common.convertStatusToString(orderModel.getOrderStatus()))
+                                .append(". So you can't track directions"),Toast.LENGTH_SHORT).show();
+                    }
                         }));
 
                 buf.add(new MyButton(getContext(),"Call",30,0, Color.parseColor("#560027"),
@@ -347,7 +359,7 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
 
         FirebaseDatabase.getInstance()
                 .getReference(Common.SHIPPING_ORDER_REF)
-                .push()
+                .child(orderModel.getKey())
                 .setValue(shippingOrder)
                 .addOnFailureListener(e -> {
                     dialog.dismiss();

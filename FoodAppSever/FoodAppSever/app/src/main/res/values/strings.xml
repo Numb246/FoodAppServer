@@ -15,4 +15,6 @@
     <string name="menu_food_list">Food List</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_shipper">Shippers</string>
+    <string name="google_maps_api">AIzaSyADWEiQhHDlmxipcu4AgudsirIJDA_8D1s</string>
+    <string name="title_activity_tracking_order">TrackingOrderActivity</string>
 </resources>

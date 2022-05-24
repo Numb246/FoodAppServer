@@ -1,10 +1,12 @@
 package com.example.foodappsever.model;
 
 public class ShippingOrderModel {
+    private String key;
     private String shipperPhone,shipperName;
     private double currentLat,currentLng;
     private OrderModel orderModel;
     private boolean isStartTrip;
+
 
     public ShippingOrderModel() {
     }
@@ -55,5 +57,13 @@ public class ShippingOrderModel {
 
     public void setStartTrip(boolean startTrip) {
         isStartTrip = startTrip;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
