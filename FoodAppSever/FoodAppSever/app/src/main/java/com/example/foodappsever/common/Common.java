@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 
 import com.example.foodappsever.R;
+import com.example.foodappsever.model.BestDealsModel;
 import com.example.foodappsever.model.CategoryModel;
 import com.example.foodappsever.model.FoodModel;
 import com.example.foodappsever.model.OrderModel;
@@ -42,12 +43,14 @@ public class Common {
     public static final String SHIPPER = "Shippers";
     public static final String SHIPPING_ORDER_REF = "ShippingOrder";
     public static final String IS_OPEN_ACTIVITY_NEW_ORDER = "IsOpenActivityNewOrder";
+    public static final String BEST_DEALS = "BestDeals";
     public static ServerUserModel currentServerUser;
     public static CategoryModel categorySelected;
     public static final int DEFAULT_COLUMN_COUNT = 0;
     public static final int FULL_WIDTH_COLUMN = 1;
     public static FoodModel selectedFood;
     public static OrderModel currentOrderSelected;
+    public static BestDealsModel bestDealsSelected;
 
     public static void setSpanString(String welcome, String name, TextView textView)
     {

@@ -209,6 +209,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     navController.navigate(R.id.nav_shipper);
                 }
                 break;
+            case R.id.nav_best_deals:
+                if(item.getItemId()!=menuClick) {
+                    navController.popBackStack();
+                    navController.navigate(R.id.nav_best_deals);
+                }
+                break;
             case R.id.nav_sign_out:
                 signOut();
                 break;
