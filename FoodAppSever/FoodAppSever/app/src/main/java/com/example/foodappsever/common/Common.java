@@ -24,6 +24,7 @@ import com.example.foodappsever.R;
 import com.example.foodappsever.model.BestDealsModel;
 import com.example.foodappsever.model.CategoryModel;
 import com.example.foodappsever.model.FoodModel;
+import com.example.foodappsever.model.MostPopularModel;
 import com.example.foodappsever.model.OrderModel;
 import com.example.foodappsever.model.ServerUserModel;
 import com.example.foodappsever.model.TokenModel;
@@ -44,6 +45,7 @@ public class Common {
     public static final String SHIPPING_ORDER_REF = "ShippingOrder";
     public static final String IS_OPEN_ACTIVITY_NEW_ORDER = "IsOpenActivityNewOrder";
     public static final String BEST_DEALS = "BestDeals";
+    public static final String MOST_POPULAR = "MostPopular";
     public static ServerUserModel currentServerUser;
     public static CategoryModel categorySelected;
     public static final int DEFAULT_COLUMN_COUNT = 0;
@@ -51,6 +53,7 @@ public class Common {
     public static FoodModel selectedFood;
     public static OrderModel currentOrderSelected;
     public static BestDealsModel bestDealsSelected;
+    public static MostPopularModel mostPopularSelected;
 
     public static void setSpanString(String welcome, String name, TextView textView)
     {
