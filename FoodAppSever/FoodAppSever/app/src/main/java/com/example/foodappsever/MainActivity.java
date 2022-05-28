@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         init();
     }
     private void init(){
-       providers= Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build());
+       providers= Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build(),new AuthUI.IdpConfig.EmailBuilder().build());
 
        serverRef= FirebaseDatabase.getInstance().getReference(Common.SERVER_REF);
        firebaseAuth=FirebaseAuth.getInstance();
@@ -121,12 +122,21 @@ public class MainActivity extends AppCompatActivity {
         builder.setMessage("Please fill information \n admin will accept your account late");
 
         View itemView= LayoutInflater.from(this).inflate(R.layout.layout_register,null);
+        TextInputLayout phone_input_layout=(TextInputLayout)itemView.findViewById(R.id.phone_input_layout);
         EditText edt_name=itemView.findViewById(R.id.edt_name);
         EditText edt_phone=itemView.findViewById(R.id.edt_phone);
 
         //set data
-        edt_phone.setText(user.getPhoneNumber());
-        builder.setNegativeButton("CANCEL", (dialogInterface, i) -> dialogInterface.dismiss())
+        if(user.getPhoneNumber()==null || TextUtils.isEmpty(user.getPhoneNumber()))
+        {
+            phone_input_layout.setHint("Email");
+            edt_phone.setText(user.getEmail());
+            edt_name.setText(user.getDisplayName());
+        }
+        else
+        {
+            edt_phone.setText(user.getPhoneNumber());
+        }        builder.setNegativeButton("CANCEL", (dialogInterface, i) -> dialogInterface.dismiss())
                 .setPositiveButton("REGISTER", (dialogInterface, i) -> {
                     if(TextUtils.isEmpty(edt_name.getText().toString()))
                     {
@@ -180,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)
+                .setLogo(R.drawable.logo)
+                .setTheme(R.style.LoginTheme)
                 .build(),APP_REQUEST_CODE);
     }
 
