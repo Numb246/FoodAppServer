@@ -15,10 +15,11 @@
     <string name="menu_food_list">Food List</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_shipper">Shippers</string>
-    <string name="google_maps_api">AIzaSyADWEiQhHDlmxipcu4AgudsirIJDA_8D1s</string>
+    <string name="google_maps_api">AIzaSyBV_xjwoEw8ulQM9RSA0VlqZ4fT5Rx-jto</string>
     <string name="title_activity_tracking_order">TrackingOrderActivity</string>
     <string name="menu_best_deals">Best Deals</string>
     <string name="menu_most_popular">Most Popular</string>
+    <string name="menu_send_news">News System</string>
 
 
 </resources>
