@@ -247,13 +247,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_best_deals:
                 if(item.getItemId()!=menuClick) {
-                    navController.popBackStack();
+                    //navController.popBackStack();
                     navController.navigate(R.id.nav_best_deals);
                 }
                 break;
             case R.id.nav_most_popular:
                 if(item.getItemId()!=menuClick) {
-                    navController.popBackStack();
+                    //navController.popBackStack();
                     navController.navigate(R.id.nav_most_popular);
                 }
                 break;
