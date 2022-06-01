@@ -214,7 +214,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
     public void  onToastEvent(ToastEvent event)
     {
-        if(event.isUpdate())
+        if(event.getAction() == Common.ACTION.CREATE)
+        {
+            Toast.makeText(this, "Create Success", Toast.LENGTH_SHORT).show();
+        }
+        else if(event.getAction() == Common.ACTION.UPDATE)
         {
             Toast.makeText(this, "Update Success", Toast.LENGTH_SHORT).show();
         }
