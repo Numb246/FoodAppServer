@@ -254,8 +254,10 @@ public class FoodListFragment extends Fragment {
         });
         builder.setNegativeButton("CANCEL",(dialogInterface, i) -> dialogInterface.dismiss())
                 .setPositiveButton("CREATE",((dialogInterface, i) -> {
+
                     FoodModel updateFood=new FoodModel();
                     updateFood.setName(edt_food_name.getText().toString());
+                    updateFood.setId(UUID.randomUUID().toString());
                     updateFood.setDescription(edt_food_description.getText().toString());
                     updateFood.setPrice(TextUtils.isEmpty(edt_food_price.getText())?0:Long.parseLong(edt_food_price.getText().toString()));
                     if(imageUri!=null)
