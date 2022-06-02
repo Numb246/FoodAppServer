@@ -174,6 +174,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onStop() {
+        EventBus.getDefault().removeAllStickyEvents();
         EventBus.getDefault().unregister(this);
         compositeDisposable.clear();
         super.onStop();
@@ -214,7 +215,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
     public void  onToastEvent(ToastEvent event)
     {
-        if(event.isUpdate())
+        if(event.getAction() == Common.ACTION.CREATE)
+        {
+            Toast.makeText(this, "Create Success", Toast.LENGTH_SHORT).show();
+        }
+        else if(event.getAction() == Common.ACTION.UPDATE)
         {
             Toast.makeText(this, "Update Success", Toast.LENGTH_SHORT).show();
         }
