@@ -28,6 +28,7 @@ import androidx.core.app.NotificationCompat;
 import com.example.foodappsever.R;
 import com.example.foodappsever.model.BestDealsModel;
 import com.example.foodappsever.model.CategoryModel;
+import com.example.foodappsever.model.DiscountModel;
 import com.example.foodappsever.model.FoodModel;
 import com.example.foodappsever.model.MostPopularModel;
 import com.example.foodappsever.model.OrderModel;
@@ -58,6 +59,8 @@ public class Common {
     public static final String KEY_ROOM_ID = "CHAT_ROOM_ID";
     public static final String KEY_CHAT_USER = "CHAT_SENDER";
     public static final String CHAT_DETAIL_REF = "ChatDetail";
+    public static final String DISCOUNT = "Discount";
+    public static final String LOCATION_REF = "Location";
     public static ServerUserModel currentServerUser;
     public static CategoryModel categorySelected;
     public static final int DEFAULT_COLUMN_COUNT = 0;
@@ -66,6 +69,7 @@ public class Common {
     public static OrderModel currentOrderSelected;
     public static BestDealsModel bestDealsSelected;
     public static MostPopularModel mostPopularSelected;
+    public static DiscountModel discountSelected;
 
     public enum ACTION {
         CREATE,

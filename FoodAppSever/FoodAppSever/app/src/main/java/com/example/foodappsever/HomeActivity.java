@@ -1,8 +1,11 @@
 package com.example.foodappsever;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,11 +25,17 @@ import com.example.foodappsever.model.EventBus.ChangeMenuClick;
 import com.example.foodappsever.model.EventBus.ToastEvent;
 import com.example.foodappsever.model.FCMResponse;
 import com.example.foodappsever.model.FCMSenData;
+import com.example.foodappsever.model.RestaurantLocationModel;
 import com.example.foodappsever.remote.IFCMService;
 import com.example.foodappsever.remote.RetrofitFCMClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -34,6 +43,7 @@ import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -43,11 +53,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodappsever.databinding.ActivityHomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -72,20 +89,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private NavController navController;
-    private int menuClick=-1;
+    private int menuClick = -1;
 
     private ImageView img_upload;
-    private CompositeDisposable compositeDisposable=new CompositeDisposable();
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private IFCMService ifcmService;
-    private Uri imgUri=null;
+    private Uri imgUri = null;
 
     private FirebaseStorage storage;
     private StorageReference storageReference;
 
     @OnClick(R.id.fab_chat)
-    void onOpenChatList(){
-        startActivity(new Intent(this,ChatListActivity.class));
+    void onOpenChatList() {
+        startActivity(new Intent(this, ChatListActivity.class));
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,9 +113,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(binding.appBarHome.toolbar);
         ButterKnife.bind(this);
-        ifcmService= RetrofitFCMClient.getInstance().create(IFCMService.class);
-        storage=FirebaseStorage.getInstance();
-        storageReference=storage.getReference();
+        ifcmService = RetrofitFCMClient.getInstance().create(IFCMService.class);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
         subscribeToTopic(Common.createTopicOrder());
         updateToken();
 
@@ -106,7 +124,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_category, R.id.nav_food_list, R.id.nav_order,R.id.nav_shipper)
+                R.id.nav_category, R.id.nav_food_list, R.id.nav_order, R.id.nav_shipper)
                 .setOpenableLayout(drawer)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
@@ -114,30 +132,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationUI.setupWithNavController(navigationView, navController);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.bringToFront();
-        View headerView=navigationView.getHeaderView(0);
-        TextView txt_user=(TextView) headerView.findViewById(R.id.txt_user);
-        Common.setSpanString("Hey",Common.currentServerUser.getName(),txt_user);
-        menuClick=R.id.nav_category;
+        View headerView = navigationView.getHeaderView(0);
+        TextView txt_user = (TextView) headerView.findViewById(R.id.txt_user);
+        Common.setSpanString("Hey", Common.currentServerUser.getName(), txt_user);
+        menuClick = R.id.nav_category;
         checkIsOpenFromActivity();
     }
 
     private void checkIsOpenFromActivity() {
-        boolean isOpenFromNewOrder=getIntent().getBooleanExtra(Common.IS_OPEN_ACTIVITY_NEW_ORDER,false);
-        if(isOpenFromNewOrder)
-        {
+        boolean isOpenFromNewOrder = getIntent().getBooleanExtra(Common.IS_OPEN_ACTIVITY_NEW_ORDER, false);
+        if (isOpenFromNewOrder) {
             navController.popBackStack();
             navController.navigate(R.id.nav_order);
-            menuClick=R.id.nav_order;
+            menuClick = R.id.nav_order;
         }
     }
 
     private void updateToken() {
         FirebaseMessaging.getInstance().getToken()
                 .addOnFailureListener(e -> {
-                    Toast.makeText(HomeActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 })
                 .addOnSuccessListener(s -> {
-                    Common.updateToken(HomeActivity.this,s,true,false);
+                    Common.updateToken(HomeActivity.this, s, true, false);
                 });
     }
 
@@ -145,11 +162,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         FirebaseMessaging.getInstance()
                 .subscribeToTopic(topicOrder)
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 })
                 .addOnCompleteListener(task -> {
-                    if(!task.isSuccessful())
-                        Toast.makeText(this,"Failed: "+task.isSuccessful(),Toast.LENGTH_SHORT).show();
+                    if (!task.isSuccessful())
+                        Toast.makeText(this, "Failed: " + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -180,51 +197,38 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onStop();
     }
 
-    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
-    public void  onCategoryClick(CategoryClick event)
-    {
-        if(event.isSuccess())
-        {
-            if(menuClick != R.id.nav_food_list)
-            {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onCategoryClick(CategoryClick event) {
+        if (event.isSuccess()) {
+            if (menuClick != R.id.nav_food_list) {
                 navController.navigate(R.id.nav_food_list);
-                menuClick=R.id.nav_food_list;
+                menuClick = R.id.nav_food_list;
             }
         }
 
     }
 
-    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
-    public void  onChangeMenuClick(ChangeMenuClick event)
-    {
-        Toast.makeText(this, "TEST"+event.isFromFoodList(), Toast.LENGTH_SHORT).show();
-        if(event.isFromFoodList())
-        {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onChangeMenuClick(ChangeMenuClick event) {
+        Toast.makeText(this, "TEST" + event.isFromFoodList(), Toast.LENGTH_SHORT).show();
+        if (event.isFromFoodList()) {
             Toast.makeText(this, "TEST", Toast.LENGTH_SHORT).show();
-            navController.popBackStack(R.id.nav_category,true);
+            navController.popBackStack(R.id.nav_category, true);
             navController.navigate(R.id.nav_category);
-        }
-        else
-        {
-            navController.popBackStack(R.id.nav_food_list,true);
+        } else {
+            navController.popBackStack(R.id.nav_food_list, true);
             navController.navigate(R.id.nav_food_list);
         }
-        menuClick=-1;
+        menuClick = -1;
     }
 
-    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
-    public void  onToastEvent(ToastEvent event)
-    {
-        if(event.getAction() == Common.ACTION.CREATE)
-        {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onToastEvent(ToastEvent event) {
+        if (event.getAction() == Common.ACTION.CREATE) {
             Toast.makeText(this, "Create Success", Toast.LENGTH_SHORT).show();
-        }
-        else if(event.getAction() == Common.ACTION.UPDATE)
-        {
+        } else if (event.getAction() == Common.ACTION.UPDATE) {
             Toast.makeText(this, "Update Success", Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
+        } else {
             Toast.makeText(this, "Delete Success", Toast.LENGTH_SHORT).show();
         }
         EventBus.getDefault().postSticky(new ChangeMenuClick(event.isFromFoodList()));
@@ -236,37 +240,45 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         item.setChecked(true);
         drawer.closeDrawers();
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.nav_category:
-                if(item.getItemId()!=menuClick) {
+                if (item.getItemId() != menuClick) {
                     navController.popBackStack();
                     navController.navigate(R.id.nav_category);
                 }
                 break;
             case R.id.nav_order:
-                if(item.getItemId()!=menuClick) {
+                if (item.getItemId() != menuClick) {
                     navController.popBackStack();
                     navController.navigate(R.id.nav_order);
                 }
                 break;
             case R.id.nav_shipper:
-                if(item.getItemId()!=menuClick) {
+                if (item.getItemId() != menuClick) {
                     navController.popBackStack();
                     navController.navigate(R.id.nav_shipper);
                 }
                 break;
             case R.id.nav_best_deals:
-                if(item.getItemId()!=menuClick) {
+                if (item.getItemId() != menuClick) {
                     //navController.popBackStack();
                     navController.navigate(R.id.nav_best_deals);
                 }
                 break;
             case R.id.nav_most_popular:
-                if(item.getItemId()!=menuClick) {
+                if (item.getItemId() != menuClick) {
                     //navController.popBackStack();
                     navController.navigate(R.id.nav_most_popular);
                 }
+                break;
+            case R.id.nav_discount:
+                if (item.getItemId() != menuClick) {
+                    navController.popBackStack();
+                    navController.navigate(R.id.nav_discount);
+                }
+                break;
+            case R.id.nav_location:
+                showUpdateLocationDialog();
                 break;
             case R.id.nav_send_news:
                 showNewsDialog();
@@ -275,11 +287,69 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 signOut();
                 break;
             default:
-                menuClick=-1;
+                menuClick = -1;
                 break;
         }
-        menuClick=item.getItemId();
+        menuClick = item.getItemId();
         return true;
+    }
+
+    private void showUpdateLocationDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Update Location");
+        builder.setMessage("Do you want to update this location to your restaurant?");
+        builder.setNegativeButton("NO", (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+        });
+        builder.setPositiveButton("YES", (dialogInterface, i) -> {
+            Dexter.withContext(HomeActivity.this)
+                    .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                    .withListener(new PermissionListener() {
+                        @Override
+                        public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                            FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(HomeActivity.this);
+                            if (ActivityCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                return;
+                            }
+                            fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
+                                @NonNull
+                                @Override
+                                public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                                    return null;
+                                }
+
+                                @Override
+                                public boolean isCancellationRequested() {
+                                    return true;
+                                }
+                            }).addOnSuccessListener(location -> {
+                                FirebaseDatabase.getInstance()
+                                        .getReference(Common.RESTAURANT_REF)
+                                        .child(Common.currentServerUser.getRestaurant())
+                                        .child(Common.LOCATION_REF)
+                                        .setValue(new RestaurantLocationModel(location.getLatitude(),location.getLongitude()))
+                                        .addOnSuccessListener(unused -> Toast.makeText(HomeActivity.this,"Update location successfully",Toast.LENGTH_SHORT).show())
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(HomeActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                                        });
+
+                            }).addOnFailureListener(e -> Toast.makeText(HomeActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        }
+
+                        @Override
+                        public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                            Toast.makeText(HomeActivity.this,"You must allow this permission",Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+
+                        }
+                    }).check();
+        });
+        AlertDialog dialog=builder.create();
+        dialog.show();
+
     }
 
     private void showNewsDialog() {
