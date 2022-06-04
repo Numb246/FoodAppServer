@@ -82,4 +82,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
+
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+
+    implementation 'com.karumi:dexter:6.2.1'
 }

@@ -14,6 +14,7 @@
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/activity_size_addon_edit.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/app_bar_home.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/content_home.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/discount_fragment.xml" value="0.25" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/fragment_order.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/fragment_order_filter.xml" value="0.25" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/fragment_shipper.xml" value="0.1" />
@@ -21,6 +22,7 @@
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_dialog_order_detail.xml" value="0.1" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_dialog_shipped.xml" value="0.1" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_dialog_shipping.xml" value="0.15126050420168066" />
+        <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_discount_item.xml" value="0.1" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_message_list_item.xml" value="0.33" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_message_picture.xml" value="0.1" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_message_text.xml" value="0.1" />
@@ -31,10 +33,12 @@
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_shipper.xml" value="0.1" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_shipper_selected.xml" value="0.1" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_size_addon_display.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_update_discount.xml" value="0.25" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/layout_update_food.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/layout/nav_header_home.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/menu/activity_main_drawer.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/menu/addon_size_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/menu/discount_menu.xml" value="0.1" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/menu/food_list_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/menu/home.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Admin/Documents/GitHub/FoodAppServer/FoodAppSever/FoodAppSever/app/src/main/res/menu/order_filter_menu.xml" value="0.1" />
