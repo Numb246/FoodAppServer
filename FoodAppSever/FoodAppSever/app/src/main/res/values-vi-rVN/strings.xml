@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FoodAppSever</string>
+    <string name="action_settings">Cài đặt</string>
+    <string name="action_search">Tìm kiếm</string>
+    <string name="menu_order">Đơn hàng</string>
+    <string name="action_filter">Lọc</string>
+    <string name="menu_sign_out">Đăng xuất</string>
+    <string name="menu_category">Danh mục</string>
+    <string name="menu_food_list">Danh sách món ăn</string>
+    <string name="menu_shipper">Người giao hàng</string>
+    <string name="title_activity_tracking_order">Kiểm tra đơn hàng</string>
+    <string name="menu_best_deals">Món ăn ngon</string>
+    <string name="menu_most_popular">Món ăn phổ biến</string>
+    <string name="menu_send_news">Thông báo tin tức mới</string>
+    <string name="menu_discount">Mã giảm giá</string>
+    <string name="menu_location">Địa điểm</string>
+</resources>
